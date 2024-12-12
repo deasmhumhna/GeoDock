@@ -94,7 +94,7 @@ class IterativeTransformer(nn.Module):
         return lddt_logits, dist_logits, coords, rotat, trans
     
     def orientogram(self, coords, num_bins):
-        dist, omega, theta, phi = get_coords6d(coords.squeeze(0), use_Cb=True)
+        dist, omega, theta, phi = get_coords6d(coords, use_Cb=True)
 
         mask = dist < 22.0
         
@@ -106,7 +106,8 @@ class IterativeTransformer(nn.Module):
 
         def mask_mat(mat):
             mat[~mask] = num_bins - 1
-            mat.fill_diagonal_(num_bins - 1)
+            mat[..., range(mat.shape[-2]), range(mat.shape[-1])] = num_bins - 1
+            # mat.fill_diagonal_(num_bins - 1)
             return mat
 
         omega_bin = mask_mat(omega_bin)
@@ -119,7 +120,7 @@ class IterativeTransformer(nn.Module):
         theta = F.one_hot(theta_bin, num_classes=num_bins).float() 
         phi = F.one_hot(phi_bin, num_classes=num_bins).float() 
         
-        return torch.cat([dist, omega, theta, phi], dim=-1).unsqueeze(0)
+        return torch.cat([dist, omega, theta, phi], dim=-1)
 
     def get_coords(self, rotat, trans):
         # get batch size, total_len
