@@ -53,7 +53,7 @@ def get_esm_rep(seq_prim, model, batch_converter, device):
     return rep[0, 1:-1, :]
 
 def get_pair_mats(coords, n, use_Cb=True):
-    dist, omega, theta, phi = get_coords6d(coords, use_Cb=use_Cb)
+    dist, omega, theta, phi = get_coords6d(coords.unsqueeze(0), use_Cb=use_Cb)
 
     mask = dist < 22.0
     
@@ -83,7 +83,7 @@ def get_pair_mats(coords, n, use_Cb=True):
     phi = F.one_hot(phi_bin, num_classes=num_bins).float() 
     
     # test
-    return torch.cat([dist, omega, theta, phi], dim=-1)
+    return torch.cat([dist, omega, theta, phi], dim=-1).squeeze(0)
 
 def get_pair_relpos(rec_len, lig_len):
     rmax = 32
