@@ -92,13 +92,13 @@ def get_full_coords(coords):
     a = b.cross(c, dim=-1)
     CB = -0.58273431 * a + 0.56802827 * b - 0.54067466 * c + CA
     
-    O = place_fourth_atom(torch.roll(N, -1, 0),
+    O = place_fourth_atom(torch.roll(N, -1, -2),
                                     CA, C,
                                     torch.tensor(1.231),
                                     torch.tensor(2.108),
                                     torch.tensor(-3.142))
     full_coords = torch.stack(
-        [N, CA, C, O, CB], dim=1)
+        [N, CA, C, O, CB], dim=-2)
     
     return full_coords
 
