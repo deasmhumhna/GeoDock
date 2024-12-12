@@ -60,8 +60,7 @@ def calc_planar(a_coords, b_coords, c_coords, convert_to_degree=True):
 
 # get 6d coordinates from x,y,z coords of N,Ca,C atoms
 def get_coords6d(xyz, use_Cb=False):
-
-    n = xyz.shape[0]
+    n = xyz.shape[-3]
 
     # three anchor atoms
     N  = xyz[..., 0, :]
@@ -81,22 +80,22 @@ def get_coords6d(xyz, use_Cb=False):
 
     
     omega = calc_dihedral(
-                repeat(Ca, 'r i -> r c i', c=n), 
-                repeat(Cb, 'r i -> r c i', c=n), 
-                repeat(Cb, 'c i -> r c i', r=n), 
-                repeat(Ca, 'c i -> r c i', r=n),
+                repeat(Ca, 'b r i -> b r c i', c=n), 
+                repeat(Cb, 'b r i -> b r c i', c=n), 
+                repeat(Cb, 'b c i -> b r c i', r=n), 
+                repeat(Ca, 'b c i -> b r c i', r=n),
             )
 
     theta = calc_dihedral(
-                repeat(N, 'r i -> r c i', c=n), 
-                repeat(Ca, 'r i -> r c i', c=n), 
-                repeat(Cb, 'r i -> r c i', c=n), 
-                repeat(Cb, 'c i -> r c i', r=n),
+                repeat(N,  'b r i -> b r c i', c=n), 
+                repeat(Ca, 'b r i -> b r c i', c=n), 
+                repeat(Cb, 'b r i -> b r c i', c=n), 
+                repeat(Cb, 'b c i -> b r c i', r=n),
             )
     phi = calc_planar(
-                repeat(Ca, 'r i -> r c i', c=n), 
-                repeat(Cb, 'r i -> r c i', c=n), 
-                repeat(Cb, 'c i -> r c i', r=n), 
+                repeat(Ca, 'b r i -> b r c i', c=n), 
+                repeat(Cb, 'b r i -> b r c i', c=n), 
+                repeat(Cb, 'b c i -> b r c i', r=n), 
             )
 
 
