@@ -106,7 +106,7 @@ class IterativeTransformer(nn.Module):
 
         def mask_mat(mat):
             mat[~mask] = num_bins - 1
-            mat[..., :, :].fill_diagonal_(num_bins - 1)
+            mat[..., range(mat.shape[-2]), range(mat.shape[-1])] = num_bins - 1
             return mat
 
         omega_bin = mask_mat(omega_bin)
